@@ -2,75 +2,75 @@ const router = require("express").Router();
 // Models
 const Todo = require('../models/Todo');
 
-
-
-
-
-
 router.post('/todos', async (req, res) => {
-	      const x= req.body.userId
-			 const todos = await  Todo.find({userId:x });
-			res.json(todos);
-          
-       
-	
+	const x = req.body.userId
+	const todos = await Todo.find({ userId: x });
+	res.json(todos);
+});
 
-	
+router.get('/todo/get/:id', async (req, res) => {
+	const todo = await Todo.findById(req.params.id);
+	res.json(todo);
 });
 
 router.post('/todo/new', async (req, res) => {
-try{const todo =  await new Todo({
-	userId: req.body.userId,
-		text: req.body.text })
+	try {
+		const todo = await new Todo({
+			userId: req.body.userId,
+			text: req.body.text,
+			description: req.body.description,
+			due_date: req.body.due_date
+		})
+		const xyz = await todo.save();
 
-	const xyz =   await todo.save();
-
-	res.json(xyz);}
-
+		res.json(xyz);
+	}
 	catch (error) {
 		console.error("Something bad in new add");
 		console.error(error);
 		res.send(error);
-	  }
+	}
 });
 
 router.delete('/todo/delete/:id', async (req, res) => {
-	try{const result = await Todo.findByIdAndDelete(req.params.id);
+	try {
+		const result = await Todo.findByIdAndDelete(req.params.id);
 
-	res.json({result});}
+		res.json({ result });
+	}
 	catch (error) {
 		console.error("Something bad in delete");
 		console.error(error);
 		res.send(error);
-	  }
+	}
 });
 
 router.get('/todo/complete/:id', async (req, res) => {
-	try{const todo = await Todo.findById(req.params.id);
-	(todo!=null)
-	{todo.complete = !todo.complete;}
-	
-	
-
-	await todo.save();
-
-	res.json(todo);}
+	try {
+		const todo = await Todo.findById(req.params.id);
+		(todo != null)
+		{ todo.complete = !todo.complete; }
+		await todo.save();
+		res.json(todo);
+	}
 	catch (error) {
 		console.error("Something bad hrouterened");
 		console.error(error);
 		res.send(error);
-	  }
+	}
 })
 
 router.put('/todo/update/:id', async (req, res) => {
 	const todo = await Todo.findById(req.params.id);
 
-	todo.text = req.body.text;
+	todo.text = req.body.text,
+		todo.description = req.body.description,
+		todo.due_date = req.body.due_date
 
-	 const fprdo = await todo.save();
+	const fprdo = await todo.save();
 
-	res.json(fpr);
+	res.json(fprdo);
 });
 
 
-module.exports =router;
+module.exports = router;
